@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!---/******************************************************************************
+* @file    AndroidManifest.xml
+* @brief   declare the permission to access location api 
+*  Coppyright (C) 2010 QUALCOMM Incorporated.
+*  All Rights Reserved. QUALCOMM Proprietary and Confidential.
+*  *****************************************************************************-->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.qualcomm.permission.locapi"
+      android:versionCode="1"
+      android:versionName="1.0">
+
+    <permission android:description="@string/desc"
+                android:icon="@drawable/icon"
+                android:label="@string/label"
+                android:name="com.qualcomm.permission.ACCESS_LOCATION_API"
+                android:protectionLevel="signature"/>
+
+</manifest>
+

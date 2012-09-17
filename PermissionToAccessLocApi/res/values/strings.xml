@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!---/******************************************************************************
+* @file    strings.xml
+* @brief   string resource for the invisible package 
+*  Coppyright (C) 2010 QUALCOMM Incorporated.
+*  All Rights Reserved. QUALCOMM Proprietary and Confidential.
+*  *****************************************************************************-->
+
+<resources>
+    <string name="desc">This is hardware specific and should be assigned to only OEM applications or services.</string>
+    <string name="label">Allowed to access system resource location api.</string>
+</resources>
