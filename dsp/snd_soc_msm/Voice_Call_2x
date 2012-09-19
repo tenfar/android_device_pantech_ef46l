@@ -27,23 +27,7 @@ SectionVerb
 	ACDBID 0:0
 
 EndSection
-SectionVerb
-	Name "Earpiece Voice"
 
-	EnableSequence
-		'SLIMBUS_0_RX Audio Mixer MultiMedia1':1:1
-	EndSequence
-
-	DisableSequence
-		'SLIMBUS_0_RX Audio Mixer MultiMedia1':1:0
-	EndSequence
-
-	# ALSA PCMs
-	CapturePCM 2
-	PlaybackPCM 2
-	ACDBID 0:0
-
-EndSection
 SectionVerb
 	Name "Voice CallLine"
 
@@ -517,25 +501,7 @@ SectionDevice
 	ACDBID	7:1
 
 EndSection
-SectionDevice
-	Name "Earpiece Voice"
-	Comment "Handset Rx device"
 
-	EnableSequence
-		'SLIM_0_RX Channels':0:One
-		'RX1 MIX1 INP1':0:RX1
-		'EAR PA Gain':0:POS_2_DB
-		'DAC1 Switch':1:1
-	EndSequence
-
-	DisableSequence
-		'RX1 MIX1 INP1':0:ZERO
-		'DAC1 Switch':1:0
-	EndSequence
-
-	ACDBID	7:1
-
-EndSection
 SectionDevice
 	Name "ANC Handset"
 	Comment "ANC Handset Rx device"
@@ -583,28 +549,7 @@ SectionDevice
 	ACDBID	15:1
 
 EndSection
-SectionDevice
-	Name "Speaker Voice"
-	Comment "Speaker Rx device"
 
-	EnableSequence
-		'SLIM_0_RX Channels':0:One
-		'RX5 MIX1 INP1':0:RX1
-		'RX6 DSM MUX':0:DSM_INV
-                'LINEOUT2 Volume':1:100
-                'LINEOUT4 Volume':1:100
-	EndSequence
-
-	DisableSequence
-		'RX5 MIX1 INP1':0:ZERO
-		'RX6 DSM MUX':0:CIC_OUT 
-                'LINEOUT2 Volume':1:0
-                'LINEOUT4 Volume':1:0
-	EndSequence
-
-	ACDBID	15:1
-
-EndSection
 SectionDevice
 	Name "Headphones"
 	Comment "Headset Rx device"
@@ -674,10 +619,9 @@ SectionDevice
 	EnableSequence
 		'SLIM_0_RX Channels':0:Two
 		'RX3 MIX1 INP1':0:RX1
-		'RX4 MIX1 INP1':0:RX2
-		'RX4 DSM MUX':0:CIC_OUT
-		'LINEOUT3 DAC GROUND Switch':1:1
-		'LINEOUT4 DAC GROUND Switch':1:1
+		'RX5 MIX1 INP1':0:RX2
+		'RX4 DSM MUX':0:DSM_INV
+		'RX6 DSM MUX':0:DSM_INV
                 'LINEOUT1 Volume':1:66
                 'LINEOUT2 Volume':1:66
                 'LINEOUT3 Volume':1:66
@@ -700,9 +644,9 @@ SectionDevice
 
 	DisableSequence
 		'RX3 MIX1 INP1':0:ZERO
-		'RX4 MIX1 INP1':0:ZERO
-		'LINEOUT3 DAC GROUND Switch':1:0
-		'LINEOUT4 DAC GROUND Switch':1:0
+		'RX5 MIX1 INP1':0:ZERO
+		'RX4 DSM MUX':0:CIC_OUT
+		'RX6 DSM MUX':0:CIC_OUT
                 'LINEOUT1 Volume':1:0
                 'LINEOUT2 Volume':1:0
                 'LINEOUT3 Volume':1:0
@@ -777,10 +721,9 @@ SectionDevice
 	EnableSequence
 		'SLIM_0_RX Channels':0:Two
 		'RX3 MIX1 INP1':0:RX1
-		'RX4 MIX1 INP1':0:RX2
-		'RX4 DSM MUX':0:CIC_OUT
-		'LINEOUT3 DAC GROUND Switch':1:1
-		'LINEOUT4 DAC GROUND Switch':1:1
+		'RX5 MIX1 INP1':0:RX2
+		'RX4 DSM MUX':0:DSM_INV
+		'RX6 DSM MUX':0:DSM_INV
                 'LINEOUT1 Volume':1:66
                 'LINEOUT2 Volume':1:66
                 'LINEOUT3 Volume':1:66
@@ -789,9 +732,9 @@ SectionDevice
 
 	DisableSequence
 		'RX3 MIX1 INP1':0:ZERO
-		'RX4 MIX1 INP1':0:ZERO
-		'LINEOUT3 DAC GROUND Switch':1:0
-		'LINEOUT4 DAC GROUND Switch':1:0
+		'RX5 MIX1 INP1':0:ZERO
+		'RX4 DSM MUX':0:CIC_OUT
+		'RX6 DSM MUX':0:CIC_OUT
                 'LINEOUT1 Volume':1:0
                 'LINEOUT2 Volume':1:0
                 'LINEOUT3 Volume':1:0
@@ -847,8 +790,8 @@ SectionDevice
 EndSection
 
 SectionDevice
-	Name "Handset Voice"
-	Comment "Handset Tx device"
+	Name "Line"
+	Comment "Speaker Tx device"
 
 	EnableSequence
 		'SLIM_0_TX Channels':0:One
@@ -863,72 +806,6 @@ SectionDevice
 		'DEC4 MUX':0:ZERO
 		'ADC3 Volume':1:0
 		'MICBIAS3 CAPLESS Switch':1:0
-	EndSequence
-
-	ACDBID	4:2
-
-EndSection
-
-SectionDevice
-	Name "Line"
-	Comment "Speaker Tx device"
-
-	EnableSequence
-		'SLIM_0_TX Channels':0:One
-		'SLIM TX7 MUX':0:DEC4
-		'DEC4 MUX':0:ADC3
-                'ADC3 Volume':1:100
-		'MICBIAS3 CAPLESS Switch':1:1
-	EndSequence
-
-	DisableSequence
-		'SLIM TX7 MUX':0:ZERO
-		'DEC4 MUX':0:ZERO
-                'ADC3 Volume':1:0
-		'MICBIAS3 CAPLESS Switch':1:0
-	EndSequence
-
-	ACDBID	4:2
-
-EndSection
-SectionDevice
-	Name "Line Voice"
-	Comment "Speaker Tx device"
-
-	EnableSequence
-		'SLIM_0_TX Channels':0:One
-		'SLIM TX7 MUX':0:DEC4
-		'DEC4 MUX':0:ADC3
-                'ADC3 Volume':1:100
-		'MICBIAS3 CAPLESS Switch':1:1
-	EndSequence
-
-	DisableSequence
-		'SLIM TX7 MUX':0:ZERO
-		'DEC4 MUX':0:ZERO
-                'ADC3 Volume':1:0
-		'MICBIAS3 CAPLESS Switch':1:0
-	EndSequence
-
-	ACDBID	4:2
-
-EndSection
-
-SectionDevice
-	Name "HDMI Tx"
-	Comment "HDMI Tx device"
-
-	EnableSequence
-		'SLIM_0_TX Channels':0:One
-		'SLIM TX7 MUX':0:DEC1
-		'DEC1 MUX':0:DMIC1
-		'MICBIAS1 CAPLESS Switch':1:1
-	EndSequence
-
-	DisableSequence
-		'SLIM TX7 MUX':0:ZERO
-		'DEC1 MUX':0:ZERO
-		'MICBIAS1 CAPLESS Switch':1:0
 	EndSequence
 
 	ACDBID	4:2

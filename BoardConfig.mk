@@ -26,40 +26,53 @@
 
 # inherit from common msm8960
 -include device/pantech/msm8960-common/BoardConfigCommon.mk
+TARGET_BOOTLOADER_BOARD_NAME :=ef46l
 
-# Bootloader
-TARGET_BOOTLOADER_BOARD_NAME := ef46l
 
-# Kernel
+
+TARGET_KERNEL_CONFIG := cm_ef46l_defconfig
+TARGET_KERNEL_SOURCE := kernel/pantech/ef46l
+
+
+
+#############KERNEL SETTINGS########################
+BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.hardware=ef46l androidboot.carrier=LGT-KOR user_debug=31 msm_rtb.filter=0x3F loglevel=0
 BOARD_KERNEL_BASE := 0x80200000
 BOARD_KERNEL_PAGESIZE := 2048
-BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.hardware=ef46l androidboot.carrier=LGT-KOR user_debug=31 msm_rtb.filter=0x3F loglevel=0
 BOARD_FORCE_RAMDISK_ADDRESS := 0x82400000
 
 
-#TARGET_PREBUILT_KERNEL := device/pantech/ef46l/kernel
-TARGET_KERNEL_CONFIG := cm_ef46l_defconfig
-TARGET_KERNEL_SOURCE := kernel/pantech/ef46l
-# Use libril in the device tree
-BOARD_PROVIDES_LIBRIL := true
+############INIT SETTINGS###########################
 
-
-
-# Lights
-TARGET_PROVIDES_LIBLIGHTS := true
-
-# Wifi
-WIFI_DRIVER_MODULE_NAME          := wlan
-WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wlan.ko"
-TARGET_CUSTOM_WIFI              := ../../device/pantech/ef46l/wifi/wifi.c
-
-
-# Filesystem
+#TARGET_PROVIDES_INIT_RC := true
+TARGET_RECOVERY_INITRC := device/pantech/ef46l/recovery/init.rc
+#############EMMC SETTINGS##########################
 TARGET_USERIMAGES_USE_EXT4 := true
-BOARD_BOOTIMAGE_PARTITION_SIZE := 10485760
-BOARD_RECOVERYIMAGE_PARTITION_SIZE := 10485760
-BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1471938560
-BOARD_USERDATAIMAGE_PARTITION_SIZE := 274464768
-BOARD_FLASH_BLOCK_SIZE := 131072
-#BOARD_VOLD_MAX_PARTITIONS := 28
-#TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun%d/file
+BOARD_USES_MMCUTILS := true
+BOARD_HAS_LARGE_FILESYSTEM := true
+BOARD_HAS_NO_MISC_PARTITION := true
+#############RECOVERY SETTINGS######################
+BOARD_HAS_NO_SELECT_BUTTON := true
+#RGBA_8888 BGRA_8888 RGBX_8888
+TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
+#TARGET_RECOVERY_UI_LIB := librecovery_ui_ef46l
+#BOARD_CUSTOM_GRAPHICS := ../../../device/pantech/ef46l/recovery/graphics.c
+
+#BOARD_TOUCH_RECOVERY:=true
+BOARD_UMS_LUNFILE := /sys/devices/virtual/android_usb/android0/f_mass_storage/lun0/file
+BOARD_RECOVERY_ALWAYS_WIPES :=true
+BOARD_RECOVERY_HANDLES_MOUNT :=true
+
+
+#
+BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
+BOARD_VOLD_DISC_HAS_MULTIPLE_MAJORS := true
+
+BOARD_VOLD_MAX_PARTITIONS := 36
+
+
+BOARD_MOBILEDATA_INTERFACE_NAME := "rmnet0,pdp0"
+
+
+
+

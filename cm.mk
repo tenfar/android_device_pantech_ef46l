@@ -1,9 +1,8 @@
-# Specify phone tech before including full_phone
+## Specify phone tech before including full_phone
 $(call inherit-product, vendor/cm/config/gsm.mk)
 
 # Release name
 PRODUCT_RELEASE_NAME := ef46l
-
 TARGET_BOOTANIMATION_NAME := vertical-720x1280
 
 
@@ -13,7 +12,7 @@ $(call inherit-product, vendor/cm/config/nfc_enhanced.mk)
 # Inherit device configuration
 $(call inherit-product, device/pantech/ef46l/device_ef46l.mk)
 
-# Device naming
+## Device identifier. This must come after all inclusions
 PRODUCT_DEVICE := ef46l
 PRODUCT_NAME := cm_ef46l
 PRODUCT_BRAND := PANTECH

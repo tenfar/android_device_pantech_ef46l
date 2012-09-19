@@ -1,5 +1,4 @@
 ifeq ($(TARGET_BOOTLOADER_BOARD_NAME),ef46l)
-
 LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)

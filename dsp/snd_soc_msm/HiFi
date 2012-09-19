@@ -358,8 +358,7 @@ SectionDevice
 	EndSequence
 
 	DisableSequence
-		'RX5 MIX1 INP1':0:ZERO
-		'RX6 DSM MUX':0:CIC_OUT 
+                'RX5 MIX1 INP1':0:ZERO
                 'LINEOUT2 Volume':1:0
                 'LINEOUT4 Volume':1:0
 	EndSequence
@@ -380,8 +379,7 @@ SectionDevice
 	EndSequence
 
 	DisableSequence
-		'RX5 MIX1 INP1':0:ZERO
-		'RX6 DSM MUX':0:CIC_OUT 
+                'RX5 MIX1 INP1':0:ZERO
                 'LINEOUT2 Volume':1:0
                 'LINEOUT4 Volume':1:0
 	EndSequence
@@ -436,7 +434,6 @@ SectionDevice
 
 	DisableSequence
 		'RX5 MIX1 INP1':0:ZERO
-		'RX6 DSM MUX':0:CIC_OUT 
                 'LINEOUT2 Volume':1:0
                 'LINEOUT4 Volume':1:0
 		'RX1 MIX1 INP1':0:ZERO
@@ -588,26 +585,6 @@ EndSection
 
 SectionDevice
 	Name "Headset"
-	Comment "Headset Tx device"
-
-	EnableSequence
-		'SLIM_0_TX Channels':0:One
-		'SLIM TX7 MUX':0:DEC5
-		'DEC5 MUX':0:ADC2
-		'ADC2 Volume':1:100
-	EndSequence
-
-	DisableSequence
-		'SLIM TX7 MUX':0:ZERO
-		'DEC5 MUX':0:ZERO
-		'ADC2 Volume':1:0
-	EndSequence
-
-	ACDBID	8:2
-
-EndSection
-SectionDevice
-	Name "Headset Voice"
 	Comment "Headset Tx device"
 
 	EnableSequence
@@ -1994,8 +1971,8 @@ SectionModifier
 	Name "Play Voice"
 
 	# ALSA PCMs
-	capturePCM 0
-	PlaybackPCM 0
+	CapturePCM 2
+	PlaybackPCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2012,8 +1989,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 0
-	capturePCM 0
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2030,8 +2007,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 0
-	capturePCM 0
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2048,8 +2025,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 0
-	capturePCM 0
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2066,8 +2043,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 0
-	capturePCM 0
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2084,8 +2061,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 0
-	capturePCM 0
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2102,8 +2079,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 0
-	capturePCM 0
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2120,8 +2097,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 0
-	capturePCM 0
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2138,8 +2115,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 0
-	capturePCM 0
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2156,8 +2133,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 0
-	capturePCM 0
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2174,8 +2151,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 4
-	capturePCM 4
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2192,8 +2169,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 4
-	capturePCM 4
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2210,8 +2187,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 4
-	capturePCM 4
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2228,8 +2205,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 4
-	capturePCM 4
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2246,8 +2223,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 4
-	capturePCM 4
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2264,8 +2241,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 4
-	capturePCM 4
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2282,8 +2259,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 4
-	capturePCM 4
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2300,8 +2277,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 4
-	capturePCM 4
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2318,8 +2295,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 4
-	capturePCM 4
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2336,8 +2313,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 4
-	capturePCM 4
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2354,8 +2331,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 4
-	capturePCM 4
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2372,8 +2349,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 4
-	capturePCM 4
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2390,8 +2367,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 4
-	capturePCM 4
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2409,8 +2386,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 4
-	capturePCM 4
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2428,8 +2405,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 4
-	capturePCM 4
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2447,8 +2424,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 4
-	capturePCM 4
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2466,8 +2443,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 4
-	capturePCM 4
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection
@@ -2482,8 +2459,8 @@ SectionModifier
 	EndSequence
 
 	# ALSA PCMs
-	PlaybackPCM 4
-	capturePCM 4
+	PlaybackPCM 2
+	capturePCM 2
 	ACDBID 0:0
 
 EndSection

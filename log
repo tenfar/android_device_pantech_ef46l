@@ -1,0 +1,49 @@
+
+D/alsa_ucm(  215): snd_use_case_set(): uc_mgr 0x172b8 identifier _swdev/Speaker value Earpiece
+D/alsa_ucm(  215): Set mixer controls for HiFiSpeaker enable 0
+D/alsa_ucm(  215): Setting mixer control: SLIMBUS_0_RX Audio Mixer MultiMedia1, value: 0
+D/alsa_ucm(  215): Set mixer controls for Speaker enable 0
+D/alsa_ucm(  215): Setting mixer control: RX5 MIX1 INP1, value: ZERO
+D/alsa_ucm(  215): Setting mixer control: RX6 DSM MUX, value: CIC_OUT
+D/alsa_ucm(  215): Setting mixer control: LINEOUT2 Volume, value: 0
+D/alsa_ucm(  215): Setting mixer control: LINEOUT4 Volume, value: 0
+E/alsa_ucm(  215): Element not found to set the status
+D/alsa_ucm(  215): snd_use_case_set(): uc_mgr 0x172b8 identifier _enadev value Earpiece
+D/alsa_ucm(  215): enadev: device value to be enabled: Earpiece
+D/alsa_ucm(  215): Set mixer controls for Earpiece enable 1
+D/alsa_ucm(  215): acdb_id 7 cap 1 enable 1
+D/alsa_ucm(  215): Setting mixer control: SLIM_0_RX Channels, value: One
+D/alsa_ucm(  215): Setting mixer control: RX1 MIX1 INP1, value: RX1
+D/alsa_ucm(  215): Setting mixer control: EAR PA Gain, value: POS_2_DB
+D/alsa_ucm(  215): Setting mixer control: DAC1 Switch, value: 1
+D/alsa_ucm(  215): Set mixer controls for HiFiEarpiece enable 1
+D/alsa_ucm(  215): Setting mixer control: SLIMBUS_0_RX Audio Mixer MultiMedia1, value: 1
+D/alsa_ucm(  215): snd_use_case_set(): uc_mgr 0x172b8 identifier _enadev value Handset
+D/alsa_ucm(  215): enadev: device value to be enabled: Handset
+D/alsa_ucm(  215): snd_use_case_set(): uc_mgr 0x172b8 identifier _enamod value Play Voice
+D/alsa_ucm(  215): Set mixer controls for Play Voice enable 1
+D/alsa_ucm(  215): Set mixer controls for Earpiece enable 1
+D/alsa_ucm(  215): Voice acdb: rx id 7 tx id 4
+D/alsa_ucm(  215): Setting mixer control: SLIM_0_RX Channels, value: One
+D/alsa_ucm(  215): Setting mixer control: RX1 MIX1 INP1, value: RX1
+D/alsa_ucm(  215): Setting mixer control: EAR PA Gain, value: POS_2_DB
+D/alsa_ucm(  215): Setting mixer control: DAC1 Switch, value: 1
+D/alsa_ucm(  215): Set mixer controls for Play VoiceEarpiece enable 1
+D/alsa_ucm(  215): Set mixer controls for Handset enable 1
+D/alsa_ucm(  215): Setting mixer control: SLIM_0_TX Channels, value: One
+D/alsa_ucm(  215): Setting mixer control: SLIM TX7 MUX, value: DEC4
+D/alsa_ucm(  215): Setting mixer control: DEC4 MUX, value: ADC3
+D/alsa_ucm(  215): Setting mixer control: ADC3 Volume, value: 100
+D/alsa_ucm(  215): Setting mixer control: MICBIAS3 CAPLESS Switch, value: 1
+D/alsa_ucm(  215): Set mixer controls for Play VoiceHandset enable 1
+D/alsa_ucm(  215): Setting mixer control: SLIM_0_RX_Voice Mixer CSVoice, value: 1
+D/alsa_ucm(  215): Setting mixer control: Voice_Tx Mixer SLIM_0_TX_Voice, value: 1
+D/alsa_ucm(  215): snd_use_case_set(): uc_mgr 0x172b8 identifier _verb value Inactive
+D/alsa_ucm(  215): Set mixer controls for HiFi enable 0
+D/alsa_ucm(  215): Set mixer controls for HiFiEarpiece enable 0
+D/alsa_ucm(  215): Setting mixer control: SLIMBUS_0_RX Audio Mixer MultiMedia1, value: 0
+D/alsa_ucm(  215): snd_use_case_set(): uc_mgr 0x172b8 identifier _disdev value Handset
+D/alsa_ucm(  215): Valid use cases exists for device Handset, ignoring disable command
+D/alsa_ucm(  215): snd_use_case_set(): uc_mgr 0x172b8 identifier _disdev value Earpiece
+D/alsa_ucm(  215): Valid use cases exists for device Earpiece, ignoring disable command
+^C

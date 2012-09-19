@@ -7,11 +7,9 @@ bin/hci_qcomm_init
 bin/mm-qcamera-daemon
 bin/mpdecision
 bin/netmgrd
-bin/qmuxd
 bin/rmt_storage
+bin/qmuxd
 bin/thermald
-
-#####################################
 bin/time_daemon
 bin/gsiff_daemon
 bin/qseecomd
@@ -31,12 +29,16 @@ bin/fota_rawdata
 bin/ftm_ptt
 bin/ftmdaemon
 bin/fmconfig
+bin/mke2fs
 bin/nl_listener
 bin/port-bridge
 bin/pam_server
 bin/ptt_socket_app
 bin/wdsdaemon
 bin/wiperiface_v02
+bin/usbhub
+bin/usbhub_init
+bin/usb_manager
 bin/v4l2-qcamera-app
 bin/sapd
 bin/sensors.qcom
@@ -48,19 +50,20 @@ bin/e2fsck
 bin/qmiproxy
 bin/bridgemgrd
 bin/rild
+#bin/qcks
 bin/profiler_daemon
 
 # Audio
 lib/libacdbloader.so
 lib/libaudcal.so
-lib/hw/alsa.msm8960.so
-lib/hw/audio_policy.msm8960.so
-lib/hw/audio.primary.msm8960.so
-lib/libalsa-intf.so
-lib/libaudioalsa.so
+#lib/libaudioalsa.so
+
+#bluetooth
+lib/libbluedroid.so
+
+
 # Camera
 
-lib/libsensor1.so
 lib/libchromatix_imx074_default_video.so
 lib/libchromatix_imx074_preview.so
 lib/libchromatix_imx074_video_hd.so
@@ -88,6 +91,7 @@ lib/libchromatix_s5k4e1_preview.so
 lib/libchromatix_vx6953_default_video.so
 lib/libchromatix_vx6953_preview.so
 lib/hw/camera.msm8960.so
+lib/libcamera_client.so
 lib/libgemini.so
 lib/libmmcamera_frameproc.so
 lib/libmmcamera_statsproc30.so
@@ -96,9 +100,6 @@ lib/libmmjpeg.so
 lib/liboemcamera.so
 lib/libOlaEngine.so
 lib/libmorpho_easy_hdr.so
-lib/libmmstillomx.so
-lib/libimage-jpeg-enc-omx-comp.so
-lib/libimage-omx-common.so
 
 # Graphics
 lib/egl/eglsubAndroid.so
@@ -106,25 +107,32 @@ lib/egl/libEGL_adreno200.so
 lib/egl/libGLESv1_CM_adreno200.so
 lib/egl/libGLESv2_adreno200.so
 lib/egl/libq3dtools_adreno200.so
+lib/egl/libGLESv2S3D_adreno200.so
 lib/libC2D2.so
-lib/libc2d2_z180.so
-lib/libgsl.so
-lib/libOpenVG.so
 lib/libsc-a2xx.so
+lib/libsc-a3xx.so
+lib/libOpenVG.so
+lib/libgsl.so
 
 # GPS
 lib/hw/gps.default.so
+lib/libgps.so
 lib/libgps.utils.so
 lib/libloc_adapter.so
 lib/libloc_api_v02.so
 lib/libloc_eng.so
 
-# Media libraries
+# Misc libraries
+#lib/libmm-color-convertor.so
+#lib/libOpenVG.so
+
+# OMX
 lib/libmmosal.so
-lib/libmm-color-convertor.so
 lib/libmmparser.so
-lib/libwvm.so
-lib/libWVStreamControlAPI_L3.so
+lib/libDivxDrm.so
+lib/libmmstillomx.so
+lib/libimage-jpeg-enc-omx-comp.so
+lib/libimage-omx-common.so
 
 # Qualcomm/HTC common libs
 lib/libdiag.so
@@ -163,7 +171,10 @@ lib/hw/sensors.msm8960.so
 lib/hw/lights.msm8960.so
 lib/hw/nfc.default.so
 lib/libsensor_reg.so
+lib/libsensor1.so
 
+# Webkit
+lib/libv8.so
 
 #wifi
 lib/modules/mwlan_aarp.ko
@@ -174,13 +185,12 @@ lib/libQSEEComAPI.so
 lib/libcneapiclient.so
 lib/libcneqmiutils.so
 lib/libcneutils.so
-lib/libxml2.so
 lib/libxml.so
 lib/libnetutils.so
 
 
 #CPM
-#lib/libcpmgrjni.so
+lib/libcpmgrjni.so
 
 #DMB
 
@@ -243,7 +253,7 @@ lib/libyas530.so
 #lib/libAKM.so
 
 
-##qcom prebuilt
+#qcom prebuilt
 lib/libxt_native.so
 lib/libxt_v02.so
 lib/pp_proc_plugin.so
@@ -263,9 +273,7 @@ lib/libulp.so
 lib/libmmrtpencoder.so
 lib/libconfigdb.so
 lib/libwiperjni_v02.so
-lib/libwiperjni.so
 bin/wiperiface_v02
-bin/wiperiface
 
 framework/browsermanagement.jar
 framework/cneapiclient.jar

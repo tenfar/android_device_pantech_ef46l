@@ -1,4 +1,5 @@
-# Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+#!/system/bin/sh
+# Copyright (c) 2010, Code Aurora Forum. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -11,7 +12,7 @@
 #       with the distribution.
 #     * Neither the name of Code Aurora Forum, Inc. nor the names of its
 #       contributors may be used to endorse or promote products derived
-#       from this software without specific prior written permission.
+#      from this software without specific prior written permission.
 #
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
 # WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -24,8 +25,53 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 
-dev_mount sdcard /mnt/sdcard 24 /devices/platform/msm_sdcc.1/mmc_host/mmc0/mmc0
+# For successful WLAN card detection, WLAN needs SDIO polling turned on.
+# This script can be used to turn on/off SDIO polling on appropriate
+# SDIO slot on the MSM target (e.g. slot 3 on 7x30 surf).
 
-dev_mount emmc /mnt/emmc auto /devices/platform/msm_sdcc.3/mmc_host
-dev_mount ota_storage /mnt/ota_storage auto /devices/platform/msm_hsusb_host/usb1
+arg=$1
+target=`getprop ro.board.platform`
+
+case "$target" in
+    "msm7627_6x")
+        echo "$arg" > /sys/devices/platform/msm_sdcc.1/polling
+        echo "$arg" > /sys/devices/platform/msm_sdcc.2/polling
+        ;;
+
+    "msm7627_ffa")
+        echo "$arg" > /sys/devices/platform/msm_sdcc.2/polling
+        ;;
+
+    "msm7627_surf")
+        echo "$arg" > /sys/devices/platform/msm_sdcc.1/polling
+        echo "$arg" > /sys/devices/platform/msm_sdcc.2/polling
+        ;;
+
+    "msm7627a")
+        echo "$arg" > /sys/devices/platform/msm_sdcc.2/polling
+        ;;
+
+    "msm7630_surf")
+        echo "$arg" > /sys/devices/platform/msm_sdcc.3/polling
+        ;;
+
+    "msm7630_1x")
+        echo "$arg" > /sys/devices/platform/msm_sdcc.3/polling
+        ;;
+
+    "msm7630_fusion")
+        echo "$arg" > /sys/devices/platform/msm_sdcc.3/polling
+        ;;
+
+    "msm8660")
+        echo "$arg" > /sys/devices/platform/msm_sdcc.4/polling
+        ;;
+
+    "msm8660_csfb")
+        echo "$arg" > /sys/devices/platform/msm_sdcc.4/polling
+        ;;
+esac
+
+exit 0

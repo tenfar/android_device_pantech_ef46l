@@ -8,7 +8,7 @@ for FILE in `egrep -v '(^#|^$)' proprietary-files.txt`; do
   if [ ! -d $BASE/$DIR ]; then
     mkdir -p $BASE/$DIR
   fi
-  adb pull $FILE $BASE/$FILE
+  cp ../../../device/pantech/ef46l/tmp/$FILE $BASE/$FILE
 done
 
 ./setup-makefiles.sh

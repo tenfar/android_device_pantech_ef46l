@@ -26,7 +26,5 @@
     <bool name="has_in_call_noise_suppression">true</bool>
      <!-- Audio parameter for setting noise suppression-->
 
-    <!-- Flag indicating if the tty is enabled -->
-    <bool name="tty_enabled">true</bool>
 
 </resources>

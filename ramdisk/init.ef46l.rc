@@ -7,72 +7,88 @@ on early-init
     symlink /dev/graphics/fb1 /dev/graphics/hdmi
     mkdir /mnt/sdcard 0000 system system
     symlink /mnt/sdcard /sdcard
-    export OTG_STORAGE /storage/otg
+    chmod 0664 /sys/devices/virtual/graphics/fb1/hpd
+    chmod 0664 /sys/devices/virtual/graphics/fb1/video_mode
+    chmod 0664 /sys/devices/virtual/graphics/fb1/format_3d
+    chmod 0664 /sys/devices/virtual/graphics/fb1/hdmi_block
+    chown system system /sys/devices/virtual/graphics/fb1/format_3d
 
+    export EXTERNAL_STORAGE /mnt/sdcard
+    export SECONDARY_STORAGE /mnt/emmc
+    export OTG_STORAGE /mnt/otg_storage
 
-
-    mkdir /storage 0050 system sdcard_r
-    mkdir /storage/sdcard0 0000 system system
-    mkdir /storage/sdcard1 0000 system system
-
-    # for backwards compatibility
-    symlink /storage/sdcard0 /sdcard
-    symlink /storage/sdcard0 /mnt/sdcard
-
-    export EXTERNAL_STORAGE /storage/sdcard0
-    symlink /storage/sdcard1 /emmc
-    symlink /storage/sdcard1 /mnt/emmc
-    symlink /storage/sdcard2 /otg_storage
-    symlink /storage/sdcard2 /mnt/otg_storage
-    export SECONDARY_STORAGE /storage/sdcard1
 on init
-    mkdir /devlog 0700 root root
+# Remove write permissions to video related nodes
 
-on emmc-fs
+
+
+
+on early-fs
     mkdir /system
     mkdir /data 0771 system system
     mkdir /cache 0771 system cache
     mkdir /devlog 0700 root root
+
+    wait /dev/block/mmcblk0p13
+    wait /dev/block/mmcblk0p15
+    wait /dev/block/mmcblk0p24
+    wait /dev/block/mmcblk0p16
+    wait /dev/block/mmcblk0p22
+    mount ext4 /dev/block/mmcblk0p13 /system ro barrier=1
+    exec /system/bin/mmcblk_utils ext4 /dev/block/mmcblk0p15
+    exec /system/bin/e2fsck -p /dev/block/mmcblk0p15  
+    mount ext4 /dev/block/mmcblk0p15 /persist nosuid nodev noatime barrier=1
+    exec /system/bin/mmcblk_utils ext4 /dev/block/mmcblk0p24
+    exec /system/bin/e2fsck -p /dev/block/mmcblk0p24
+    mount ext4 /dev/block/mmcblk0p24 /data nosuid nodev noatime barrier=1 noauto_da_alloc
     mkdir /mnt/emmc 0775 system system
     mkdir /mnt/otg_storage 0777 system system
     mkdir /mnt/emmc/tmp_mnt 0111 system system
     mkdir /emmc 0777 system system
-    mkdir /firmware 0771 system system
-    mkdir /mnt/otg_storage	0775 system system
-    mkdir /tombstones 0771 system system
-    mkdir /tombstones/modem 0771 system system
-    mkdir /tombstones/lpass 0771 system system
-    mkdir /tombstones/wcnss 0771 system system
-    mkdir /tombstones/dsps 0771 system system
-    symlink /mnt/sdcard  /sdcard
     symlink /mnt/emmc /emmc
- 
+    exec /system/bin/mmcblk_utils ext4 /dev/block/mmcblk0p16
+    exec /system/bin/e2fsck -p /dev/block/mmcblk0p16  
+    mount ext4 /dev/block/mmcblk0p16 /cache nosuid nodev noatime barrier=1
+   exec /system/bin/mmcblk_utils fat16 /dev/block/mmcblk0p22
 
- # mount all mmc partitions
-    mount_all /fstab.ef46l
-
-
-
+   mkdir /tombstones 0771 system system
+   mount ext4 /dev/block/mmcblk0p17 /tombstones nosuid nodev barrier=1
+   mkdir /tombstones/modem 0771 system system
+   mkdir /tombstones/lpass 0771 system system
+   mkdir /tombstones/wcnss 0771 system system
+   mkdir /tombstones/dsps 0771 system system
+   mkdir /firmware 0771 system system
+   wait /dev/block/mmcblk0p1
+   mount vfat /dev/block/mmcblk0p1 /firmware ro shortname=lower
    exec /system/bin/sh /system/etc/init.qcom.modem_links.sh
    exec /system/bin/sh /system/etc/init.qcom.mdm_links.sh
+   symlink /mnt/sdcard  /sdcard
 
+   mkdir /mnt/otg_storage	0775 system system
+# import cne init file
+on post-fs
+    export_rc /persist/init.cne.rc
+    mount ext4 /dev/block/mmcblk0p13 /system ro remount barrier=1
 
+# msm specific files that need to be created on /data
 on post-fs-data
     # double check perms and set owner
     chown root root /devlog
     chmod 0700 /devlog
+    remount rootfs rootfs / remount
+    # wifi
+    mkdir /data/misc/wifi 0770 wifi wifi
+    mkdir /data/misc/wifi/sockets 0770 wifi wifi
+    mkdir /data/misc/wifi/hostapd 0770 wifi wifi
+    mkdir /data/misc/wifi/wpa_supplicant 0770 wifi wifi
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+    chown dhcp dhcp /data/misc/dhcp
 
-    # Set indication (checked by vold) that we have finished this action
-    setprop vold.post_fs_done 1
+    # Create directory used by audio subsystem
+    mkdir /data/misc/audio 0770 audio audio
 
-    # prepare kernel for wifi module
-    setprop ro.product.wireless WCN3660
-    write /dev/wcnss_wlan 1
-
-on boot
-    # set RLIMIT_MEMLOCK to 64MB
-    setrlimit 8 67108864 67108864
-    # Chown polling nodes as needed from UI running on system server
+    # Mounting of persist is moved to 'on emmc-fs' and 'on fs' sections
+    # We chown/chmod /persist again so because mount is run as root + defaults
     chown system system /persist
     chmod 0771 /persist
     chmod 0664 /sys/devices/platform/msm_sdcc.1/polling
@@ -86,15 +102,16 @@ on boot
     chown system system /sys/devices/platform/msm_sdcc.3/polling
     chown system system /sys/devices/platform/msm_sdcc.4/polling
 
-
-    mkdir /data/media 0775 media_rw media_rw
-    chown media_rw media_rw /data/media
-    setprop vold.post_fs_data_done 1
+    #Create the symlink to qcn wpa_supplicant folder for ar6000 wpa_supplicant
+    mkdir /data/system 0775 system system
+    symlink /data/misc/wifi/wpa_supplicant /data/system/wpa_supplicant
 
     #Create directories for wiper services
     mkdir /data/wpstiles/ 0755 shell
     mkdir /data/wiper 0755 location qcom_oncrpc
 
+    #Create directories for gpsone_daemon services
+    mkdir /data/misc/gpsone_d 0770 system system
 
     #Create directories for QuIPS
     mkdir /data/misc/quipc 0770 gps system
@@ -122,8 +139,11 @@ on boot
     chmod 2770 /data/audio
 
     mkdir /data/bluetooth 0770 bluetooth bluetooth
+    # Enable the setgid bit on the directory
     chmod 2770 /data/bluetooth
 
+
+    #mkdir /data/radio 0770 radio radio
     mkdir /data/radio 0770 radio system
     chmod 2770 /data/radio
 
@@ -142,12 +162,25 @@ on boot
 
     insmod /system/lib/modules/mwlan_aarp.ko
     #insmod /system/lib/modules/wlan.ko
- 
+
+# '12/01/11 usb_manager permission added by hkkwon@LS2
+	chown system system /sys/devices/platform/android_usb/usb_manager
+	chmod 0660 /sys/devices/platform/android_usb/usb_manager
+     mkdir /data/media 0775 media_rw media_rw
+     chown media_rw media_rw /data/media
+     setprop vold.post_fs_data_done 1
+on early-boot
+    # set RLIMIT_MEMLOCK to 64MB
+    setrlimit 8 67108864 67108864
+
+on boot
     write /sys/devices/i2c-3/3-0024/cyttsp_update_fw 1
     start qcamerasvr
     setprop ro.nfc.port "I2C"
     chmod 0600 /dev/pn544
     chown nfc nfc /dev/pn544
+
+    setrlimit 13 40 40
 
     chmod 0666 /dev/touch_fops
     chmod 0666 /dev/qt602240
@@ -161,7 +194,6 @@ on boot
    
 
     exec system/bin/btnvtool -O
-    mkdir /data/misc/bluetooth 0770 bluetooth bluetooth
     chown bluetooth bluetooth /sys/module/bluetooth_power/parameters/power
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
@@ -179,52 +211,23 @@ on boot
 
     # for modem link
     chown system system /sys/module/serial/parameters/modem_enabled
-    #Create QMUX deamon socket area
-    mkdir /dev/socket/radio 0770 radio radio
-    chmod 2770 /dev/socket/radio
-    mkdir /dev/socket/audio 0770 media audio
-    chmod 2770 /dev/socket/audio
-
-    # wifi
-    mkdir /data/misc/wifi 0770 wifi wifi
-    mkdir /data/misc/wifi/sockets 0770 wifi wifi
-    mkdir /data/misc/wifi/hostapd 0770 wifi wifi
-    mkdir /data/misc/wifi/wpa_supplicant 0770 wifi wifi
-    mkdir /data/misc/dhcp 0770 dhcp dhcp
-    chown dhcp dhcp /data/misc/dhcp
-
+    setprop wifi.interface wlan0
     # create symlink to qcn wpa_supplicant folder
-    mkdir /data/system 0775 system system
-    symlink /data/misc/wifi/wpa_supplicant /data/system/wpa_supplicant
     symlink /dev/socket/wpa_wlan0 /data/system/wpa_supplicant/wlan0
-    symlink /dev/socket/wpa_wlan0 /data/misc/wifi/sockets/wlan0
     #Set SUID bit for usbhub
     chmod 4755 /system/bin/usbhub
     chmod 755 /system/bin/usbhub_init
-
-    # symlink for HDMI
-    symlink /dev/graphics/fb1 /dev/graphics/hdmi
-
-    # audio
-    mkdir /data/audio 0775 media audio
-
-    # radio
-    mkdir /data/radio 0770 radio radio
-
-    # time-services
-    mkdir /data/time 0700 system system
 
     # liblights
     chown system system /sys/class/leds/green/brightness
     chown system system /sys/class/leds/green/blink
     chown system system /sys/class/leds/amber/brightness
     chown system system /sys/class/leds/amber/blink
+    chown system system /sys/class/leds/button-backlight/brightness
     chown system system /sys/class/leds/lcd-backlight/brightness
-
     # flashlight
     chown system system /sys/class/leds/flashlight/brightness
     chmod 0666          /sys/class/leds/flashlight/brightness
-    
     #Remove SUID bit for iproute2 ip tool
     chmod 0755 /system/bin/ip
 
@@ -287,10 +290,10 @@ on boot
     setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
     setprop net.tcp.buffersize.evdo_b  4094,87380,262144,4096,16384,262144
 
-    write /proc/sys/net/core/rmem_max  3461120
+  write /proc/sys/net/core/rmem_max  3461120
     write /proc/sys/net/core/wmem_max  3461120
 
-    write /sys/class/net/rmnet0/mtu 1428
+   write /sys/class/net/rmnet0/mtu 1428
     write /sys/class/net/rmnet1/mtu 1428
     write /sys/class/net/rmnet2/mtu 1428
     write /sys/class/net/rmnet3/mtu 1428
@@ -301,39 +304,33 @@ on boot
 
     setprop persist.cne.UseCne  none
 
-
-
-    mkdir /dev/pantech 
-    chown system system /dev/pantech
-
+# made for common pantech folder
+     mkdir /dev/pantech 
+     chown system system /dev/pantech
+    
+#FEATURE_LGT_DS_ICON_NO_SRV_CR347576 && FEATURE_LGT_DS_SNAPSHOT_DISABLED
     setprop persist.radio.snapshot_disabled 1
-
+    
+#FEATURE_LGT_DS_RMNET_CRASH_PROPERTY_DISABLED
     setprop persist.data.netmgrd.qos.enable false
 
 
-# Services start here
 
+# Export GPIO56 for fusion targets to enable/disable hub
+service usbhub_init /system/bin/usbhub_init
+   class late_start
+   user root
+   disabled
+   oneshot
 
 service cnd /system/bin/cnd
     class late_start
     socket cnd stream 666 root radio
 
-
-
-service dhcpcd_wlan0 /system/bin/dhcpcd -BKLGA
-
-    class main 
-    disabled
-    oneshot
-
-
-service fm_dl /system/bin/sh /system/etc/init.qcom.fm.sh
+service rmt_storage /system/bin/rmt_storage /dev/block/mmcblk0p11 /dev/block/mmcblk0p12 /dev/block/mmcblk0p18
     class late_start
     user root
-    group system qcom_oncrpc
     disabled
-    oneshot
-
 
 service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
     class late_start
@@ -342,221 +339,12 @@ service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
     disabled
     oneshot
 
-service hdmid /system/bin/hdmid
-    class late_start
-    socket hdmid stream 0660 root system graphics
-    disabled
-
-
-service iprenew_wlan0 /system/bin/dhcpcd -n
-    class late_start
-    disabled
-    oneshot
-
-
-service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
-   class main
-   user root
-   disabled
-
-service netmgrd /system/bin/netmgrd
-    class main 
-    disabled
-
-service qcamerasvr /system/bin/mm-qcamera-daemon
-    class late_start
-    user media
-    group system camera inet input
-
-service qcom-post-boot /system/bin/sh /system/etc/init.qcom.post_boot.sh
-    class late_start
-    user root
-    disabled
-    oneshot
-
-service qcom-sh /system/bin/sh /init.qcom.sh
-    class core
-    user root
-    oneshot
-
-service qmuxd /system/bin/qmuxd
-    class main 
-    user radio
-    group radio audio bluetooth
-
-
-service rmt_storage /system/bin/rmt_storage /dev/block/mmcblk0p11 /dev/block/mmcblk0p12 /dev/block/mmcblk0p18
-    class core
-    user root
-
-service thermald /system/bin/thermald
-   class main
-   user root
-   group root
-
-
-
-service time_daemon /system/bin/time_daemon
-    class late_start
-    user root
-    group root
-    oneshot
-    disabled
-
-#service wpa_supplicant /system/bin/wpa_supplicant -Dnl80211 -ddd -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
-#    user root
-#    group wifi inet
-#    socket wpa_wlan0 dgram 0660 wifi wifi
-#    disabled
-#    oneshot
-
-#service p2p_supplicant /system/bin/wpa_supplicant -Dnl80211  -ddd -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
-#    user root
-#    group wifi inet
-#    socket wpa_wlan0 dgram 0660 wifi wifi
-#    disabled
-#    oneshot
-service wpa_supplicant /system/bin/wpa_supplicant -Dnl80211 -ddd -iwlan0 -puse_p2p_group_interface=1 -e/data/misc/wifi/entropy.bin -c/data/misc/wifi/wpa_supplicant.conf
-
-    #   we will start as root and wpa_supplicant will switch to user wifi
-    #   after setting up the capabilities required for WEXT
-       user root
-       group wifi inet keystore
-    class main
-    socket wpa_wlan0 dgram 660 wifi wifi
-    disabled
-    oneshot
-
-
-# New supplicant service config to support both BCM4334 / WCN3660
-service p2p_supplicant /system/bin/wpa_supplicant -ddd \
-    -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -N \
-    -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf -e/data/misc/wifi/entropy.bin -puse_p2p_group_interface=1 -c/data/misc/wifi/wpa_supplicant.conf
-    #   we will start as root and wpa_supplicant will switch to user wifi
-    #   after setting up the capabilities required for WEXT
-    user root
-    group wifi inet keystore
-    class main
-    socket wpa_wlan0 dgram 660 wifi wifi
-    disabled
-    oneshot
-
-service dhcpcd_p2p /system/bin/dhcpcd -aABKL
-    class main
-    disabled
-    oneshot
-
-
-
-
 service bt-dun /system/bin/dun-server /dev/smd7 /dev/rfcomm0
     class late_start
     user bluetooth
     group bluetooth system net_bt_admin inet
     disabled
     oneshot
-
-# pantech server
-service pantech_server /system/bin/pantech_server
-    class main 
-    socket skytest stream 666
-    user root
-
-service iprenew_p2p /system/bin/dhcpcd -n p2p
-    class late_start
-    disabled
-    oneshot
-
-service dhcpcd_bnep0 /system/bin/dhcpcd -BKLG
-    disabled
-    oneshot
-
-service wiperiface /system/bin/wiperiface_v02
-    user location
-    group qcom_oncrpc
-    oneshot
-
-
-
-service quipc_igsn /system/bin/quipc_igsn
-    class late_start
-    user gps
-    group inet gps
-    disabled
-
-service quipc_main /system/bin/quipc_main
-    class late_start
-    user gps
-    group net_admin wifi inet gps
-    disabled
-
-
-
-service drmdiag /system/bin/drmdiagapp
-    class late_start
-     user root
-     disabled
-     oneshot
-
-service qcom-wifi /system/bin/sh /system/etc/init.qcom.wifi.sh
-    class main
-    oneshot
-
-
-
-service atfwd /system/bin/ATFWD-daemon
-    class main 
-    user system
-    group system radio
-    onrestart /system/bin/log -t RIL-ATFWD -p w "ATFWD daemon restarted"
-
-
-
-service ppd /system/bin/mm-pp-daemon
-    class late_start
-    user system
-    socket pps stream 0660 system system graphics
-    group system graphics
-
-service hostapd /system/bin/hostapd -dddd /data/hostapd/hostapd.conf
-    class main 
-    user root
-    group root
-    oneshot
-    disabled
-
-service ftm_ptt /system/bin/ftm_ptt -d
-    class late_start
-    user root
-    group radio
-    disabled
-    oneshot
-
-service ds_fmc_appd /system/bin/ds_fmc_appd -p "rmnet0" -D
-    class late_start
-    group radio wifi inet
-    disabled
-    oneshot
-
-
-service ims_regmanager /system/bin/exe-ims-regmanagerprocessnative
-    class late_start
-    user system
-    group qcom_oncrpc net_bt_admin inet radio wifi
-    disabled
-
-
-service sdcard /system/bin/sdcard /data/media 1023 1023
-    class main
-    disabled
-
-
-service gsiff_daemon /system/bin/gsiff_daemon
-    class late_start
-    user system
-    group qcom_oncrpc system root gps
-
-
 
 service bt-sap /system/bin/sapd 15
     user bluetooth
@@ -578,16 +366,28 @@ service port-bridge /system/bin/port-bridge /dev/smd0 /dev/ttyGS0
     disabled
 
 service qmiproxy /system/bin/qmiproxy
-    class main 
+    class main #FEATURE_SKY_DATA_ENCRYPTION late_start
     user radio
     group radio
+    disabled
+
+# QMUX must be in multiple groups to support external process connections
+service qmuxd /system/bin/qmuxd
+    class main #FEATURE_SKY_DATA_ENCRYPTION late_start
+    user radio
+    group radio audio bluetooth
+    disabled
+
+service netmgrd /system/bin/netmgrd
+    class main #FEATURE_SKY_DATA_ENCRYPTION late_start
     disabled
 
 service sensors /system/bin/sensors.qcom
     class late_start
     user root
-    group root system radio input
+    group root
     disabled
+
 
 service btwlancoex /system/bin/sh /system/etc/init.qcom.coex.sh
     class late_start
@@ -596,11 +396,214 @@ service btwlancoex /system/bin/sh /system/etc/init.qcom.coex.sh
     disabled
     oneshot
 
+
+service wpa_supplicant /system/bin/wpa_supplicant -Dnl80211 -ddd -iwlan0
+    class late_start
+    user root
+    group wifi inet radio
+    socket wpa_wlan0 dgram 0660 wifi wifi
+    disabled
+    oneshot    
+
+
+service dhcpcd_wlan0 /system/bin/dhcpcd -BKLGA
+
+    class main 
+    disabled
+    oneshot
+
 service dhcpcd_p2p /system/bin/dhcpcd -ABKLG
     class late_start
     disabled
     oneshot
 
+service iprenew_wlan0 /system/bin/dhcpcd -n
+    class late_start
+    disabled
+    oneshot
+
+service iprenew_p2p /system/bin/dhcpcd -n p2p
+    class late_start
+    disabled
+    oneshot
+
+service dhcpcd_bnep0 /system/bin/dhcpcd -BKLG
+    disabled
+    oneshot
+
+service wiperiface /system/bin/wiperiface_v02
+    user location
+    group qcom_oncrpc
+    oneshot
+
+service gpsone_daemon /system/bin/gpsone_daemon
+    class late_start
+    user system
+    group system qcom_oncrpc inet
+    disabled
+
+service quipc_igsn /system/bin/quipc_igsn
+    class late_start
+    user gps
+    group inet gps
+    disabled
+
+service quipc_main /system/bin/quipc_main
+    class late_start
+    user gps
+    group net_admin wifi inet gps
+    disabled
+
+service fm_dl /system/bin/sh /system/etc/init.qcom.fm.sh
+    class late_start
+    user root
+    group system qcom_oncrpc
+    disabled
+    oneshot
+
+service drmdiag /system/bin/drmdiagapp
+    class late_start
+     user root
+     disabled
+     oneshot
+
+
+service qcom-sh /system/bin/sh /init.qcom.sh
+    class late_start
+    user root
+    oneshot
+
+# Pantech USB usb_control_manager
+#service usb_manager /system/bin/usb_manager
+#	class main #FEATURE_SKY_DATA_ENCRYPTION late_start
+#	user root
+
+# pantech server
+service pantech_server /system/bin/pantech_server
+    class main #FEATURE_SKY_DATA_ENCRYPTION 
+    socket skytest stream 666
+    user root
+
+service qcom-post-boot /system/bin/sh /system/etc/init.qcom.post_boot.sh
+    class late_start
+    user root
+    disabled
+    oneshot
+
+service qcom-wifi /system/bin/sh /system/etc/init.qcom.wifi.sh
+    class main
+    oneshot
+
+on property:sys.boot_completed=1
+    start qcom-post-boot
+
+service atfwd /system/bin/ATFWD-daemon
+    class main 
+    user system
+    group system radio
+    onrestart /system/bin/log -t RIL-ATFWD -p w "ATFWD daemon restarted"
+
+service hdmid /system/bin/hdmid
+    class late_start
+    socket hdmid stream 0660 root system graphics
+    disabled
+
+service ppd /system/bin/mm-pp-daemon
+    class late_start
+    user system
+    socket pps stream 0660 system system graphics
+    group system graphics
+
+service hostapd /system/bin/hostapd -dddd /data/hostapd/hostapd.conf
+    class main 
+    user root
+    group root
+    oneshot
+    disabled
+
+service ds_fmc_appd /system/bin/ds_fmc_appd -p "rmnet0" -D
+    class late_start
+    group radio wifi inet
+    disabled
+    oneshot
+
+
+service ims_regmanager /system/bin/exe-ims-regmanagerprocessnative
+    class late_start
+    user system
+    group qcom_oncrpc net_bt_admin inet radio wifi
+    disabled
+
+
+service time_daemon /system/bin/time_daemon
+    class late_start
+    user root
+    group root
+    oneshot
+    disabled
+
+service ril-daemon1 /system/bin/rild -c 1
+    class late_start
+    socket rild1 stream 660 root radio
+    socket rild-debug1 stream 660 radio system
+    user root
+    disabled
+    group radio cache inet misc audio sdcard_rw qcom_oncrpc diag
+
+service profiler_daemon /system/bin/profiler_daemon
+    class late_start
+    user root
+    group root
+    disabled
+
+# 120116 LS1-JHM modified : for mounting the internal sd card
+service sdcard /system/bin/sdcard /data/media 1023 1023
+    class late_start
+    disabled
+
+on property:vold.post_fs_data_done=1
+    start sdcard
+
+service hcidump /system/bin/sh /system/etc/hcidump.sh
+    user bluetooth
+    group bluetooth system net_bt_admin net_admin
+    disabled
+    oneshot
+
+service ftm_ptt /system/bin/ftm_ptt -d
+    class late_start #FEATURE_SKY_DATA_ENCRYPTION 
+    user root
+    group radio
+    disabled
+    oneshot
+
+
+
+
+service qcamerasvr /system/bin/mm-qcamera-daemon
+        class late_start
+        user system
+        group system camera inet
+
+service gsiff_daemon /system/bin/gsiff_daemon
+    class late_start
+    user system
+    group qcom_oncrpc
+
+service thermald /system/bin/thermald
+   class main
+   user root
+   group root
+
+service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
+   user root
+   disabled
+
+service kickstart /system/bin/qcks l
+    oneshot
+    disabled
+
+# FEATURE_PANTECH_CHARGER_OFFLINE
 service battery_charger /charger
   class charger
 
@@ -633,10 +636,11 @@ service pam_server /system/bin/pam_server
 on property:persist.pantech.bpoweronoff=true
     write /sys/devices/platform/msm_ssbi.0/pm8921-core/pm8xxx-pwrkey-emulation/pwr_onoff_delay 50000
     start bpoweronffd
+# Start kickstart if mdm is detected
 
-on property:sys.boot_completed=1
-    start qcom-post-boot
-
+on property:ro.baseband=mdm
+    mkdir /data/qcks 0770 system system
+    start kickstart
 on property:ftm_ptt_start=1
     start ftm_ptt
 
@@ -648,6 +652,10 @@ on property:persist.timed.enable=true
 
 on property:persist.ims.regmanager.mode=1
     start ims_regmanager
+
+on property:ro.data.large_tcp_window_size=true
+    # Adjust socket buffer to enlarge TCP receive window for high bandwidth (e.g. DO-RevB)
+    write /proc/sys/net/ipv4/tcp_adv_win_scale  1
 
 on property:persist.data.ds_fmc_app.mode=1
     start ds_fmc_appd
@@ -671,15 +679,27 @@ on property:crypto.driver.load=0
 on property:ro.baseband="msm"
     # Enable BT-DUN only for all msms
     setprop ro.qualcomm.bluetooth.dun true
+
+on property:ro.use_data_netmgrd=false
+    # netmgr not supported on specific target
+    stop netmgrd
+
+
 on property:ro.emmc=1
     start rmt_storage
+
+on property:ro.board.platform=msm7630_fusion
+    start usbhub_init
 
 on property:init.svc.wpa_supplicant=stopped
     stop dhcpcd
 
-on property:init.svc.p2p_supplicant=stopped
-    stop dhcpcd
+on property:bluetooth.isEnabled=true
+    start btwlancoex
+    write /sys/class/bluetooth/hci0/idle_timeout 7000
 
-on property:vold.post_fs_data_done=1
-    start sdcard
+# Adjust socket buffer to enlarge TCP receive window for high bandwidth
+# but only if ro.data.large_tcp_window_size property is set.
+on property:ro.data.large_tcp_window_size=true
+    write /proc/sys/net/ipv4/tcp_adv_win_scale  1
 

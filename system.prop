@@ -1,74 +1,83 @@
 #
 # system.prop for ef46l
 #
-
+ro.build.recovery.title=IM-A830L 恢复系统 v6.0.0.8 安智网
+ro.build.recovery.url=bbs.anzhi.com
+ro.build.recovery.weibo=weibo.com/tenfar
+ro.product.baseband_ver=S1232132
+ro.product.baseband_ver_hidden=S1232132d
+ro.product.version=TP30
 ro.sf.lcd_density=320
 # RIL properties
 mobiledata.interfaces=rmnet0
 ro.telephony.default_network=0
-DEVICE_PROVISIONED=1
-rild.libpath=/system/lib/libril-qc-qmi-1.so
-rild.libargs=-d /dev/smd0
 ro.vendor.extension_library=/system/lib/libqc-opt.so
 ro.baseband.arch=msm
-
-# audio
-#lpa.decode=true
-
-# graphics
-debug.composition.type=dyn
-debug.enabletr=true
-debug.sf.hw=1
-ro.opengles.version=131072
-ro.sf.compbypass.enable=1
-
+ro.telephony.ril.v3=qcomuiccstack
 com.qc.hardware=true
-
-# qcom cpu governor service
-dev.pm.dyn_samplingrate=1
-
-# wifi
-ro.product.wireless=WCN3660
-wifi.interface=wlan0
-
+com.qc.hdmi_out=true
+ro.hdmi.enable=true
 # data module
-ro.use_data_netmgrd=true
-persist.data_netmgrd_mtu=1440
-persist.data_netmgrd_nint=16
 
+persist.sys.timezone=Asia/Shanghai
+
+ro.sf.compbypass.enable=1
+ro.sf.lcd_density=320
+
+debug.enabletr=true
+ro.opengles.version=131072
+# qcom cpu governor service
+dalvik.vm.heapstartsize=8m
+dalvik.vm.heapgrowthlimit=64m
+dalvik.vm.heapsize=256m
+persist.data.netmgrd.qos.enable=true
 # for BT HCI transport
 ro.qualcomm.bt.hci_transport=smd
-
 # System prop for switching gps driver to qmi
 persist.gps.qmienabled=true
-
 # enable time services
 persist.timed.enable=true
-
 # System property for thermald
 persist.thermal.monitor=true
+# UMS
+persist.audio.handset.mic=analog
 
-ro.build.recovery.title=IM-A830L 恢复系统 v6.0.1.0 安智网
-ro.build.recovery.url=bbs.anzhi.com
-ro.build.recovery.weibo=weibo.com/tenfar
+ro.qualcomm.bluetooth.dun=false
+ro.qualcomm.bluetooth.sndmyinfo=false
+ro.qualcomm.bluetooth.sap=false
+ro.qualcomm.bluetooth.map=false
+ro.qualcomm.bluetooth.ftp=true
+ro.qualcomm.bluetooth.hfp.wbs=true
+ro.qualcomm.bt.hci_transport=smd
+ro.bluetooth.request.master=true
+ro.bluetooth.remote.autoconnect=true
+debug.bt.discoverable_time=0
+ro.hwui.text_cache_width=2048
 
-
-# Fields for custom RIL
-# MAX PROP NAME is 31 chars --|
+#
+# system.prop for EF46L
 #
 
-#ro.telephony.ril_class=SamsungQualcommUiccRIL
-ro.telephony.ril_class=LGEQualcommUiccRIL
-#ro.telephony.ril_class=PantechQualcommUiccRIL
-#ro.telephony.ril_class=HTCQualcommRIL
-#ro.telephony.ril_class=HuaweiRIL
-#ro.telephony.ril_class=LGEQualcommRIL
-#ro.telephony.ril_class=LGEStarRIL
-#ro.telephony.ril_class=SamsungCDMAQualcommRIL
-#ro.telephony.ril_class=SamsungRIL
-#ro.telephony.ril_class=SemcRIL
-#ro.telephony.ril_class=Smdk4210RIL
-#ro.telephony.ril_class=MotoWrigley3RIL
+rild.libpath=/system/lib/libril-qc-qmi-1.so
+rild.libargs=-d /dev/smd0
+persist.rild.nitz_plmn=
+persist.rild.nitz_long_ons_0=
+persist.rild.nitz_long_ons_1=
+persist.rild.nitz_long_ons_2=
+persist.rild.nitz_long_ons_3=
+persist.rild.nitz_short_ons_0=
+persist.rild.nitz_short_ons_1=
+persist.rild.nitz_short_ons_2=
+persist.rild.nitz_short_ons_3=
+ril.subscription.types=RUIM
+debug.sf.hw=1
+debug.egl.hw=1
+debug.composition.type=dyn
+dev.pm.dyn_samplingrate=1
+
+persist.sys.hdmi.on=0
+ro.hdmi.enable=true
+com.qc.hdmi_out=true
 
 # Audio
 lpa.decode=true
@@ -87,15 +96,94 @@ media.stagefright.enable-scan=true
 #
 # system props for the data modules
 #
+ro.use_data_netmgrd=true
+persist.data_netmgrd_mtu=1440
+persist.data_netmgrd_nint=16
 
+#
+# system props for SD card emulation of emmc partition
+#
+#ro.emmc.sdcard.partition=24
 
-# UMS
+#system props for time-services
+persist.timed.enable=true
+
+# System props for audio
+persist.audio.fluence.mode=endfire
+persist.audio.vr.enable=false
+af.resampler.quality=255
+#
+# system prop for opengles version
+#
+# 131072 is decimal for 0x20000 to report version 2
+ro.opengles.version=131072
+
+# System property for cabl
+ro.qualcomm.cabl=0
+
+#
+# System prop for sending transmit power request to RIL during WiFi hotspot on/off
+#
+ro.ril.transmitpower=true
+
+# system prop for adb_notification
+persist.adb.notify=0
+
+# system prop for usb_notification
+persist.usb_mass_storage.notify=0
+
+#
+# Needed to match behavior of stock rom
+#      D/PHONE: mDoesRilSendMultipleCallRing=false
+#
+ro.telephony.call_ring.multiple=0
+
+# Fields for custom RIL
+# MAX PROP NAME is 31 chars --|
+#
+
+#ro.telephony.ril_class=SamsungQualcommUiccRIL
+ro.telephony.ril_class=LGEQualcommUiccRIL
+#ro.telephony.ril_class=HTCQualcommRIL
+#ro.telephony.ril_class=HuaweiRIL
+#ro.telephony.ril_class=LGEQualcommRIL
+#ro.telephony.ril_class=LGEStarRIL
+#ro.telephony.ril_class=SamsungCDMAQualcommRIL
+#ro.telephony.ril_class=SamsungRIL
+#ro.telephony.ril_class=SemcRIL
+#ro.telephony.ril_class=Smdk4210RIL
+#ro.telephony.ril_class=MotoWrigley3RIL
+
+telephony.lteOnGsmDevice=1
+
+# System property for SIM
+persist.radio.apm_sim_not_pwdn=1
+
+# System prop for qmi adb log
+persist.radio.adb_log_on=1
+
+# System proverty for sys info indication
+persist.radio.add_power_save=1
+
+# System proverty snapshot disable
+persist.radio.snapshot_disabled=1
+
+# notify vold we have internal and external sd
+ro.additionalmounts=/mnt/emmc
+ro.vold.switchablepair=/mnt/sdcard,/mnt/emmc
+
+# set mass storage to default
 persist.sys.usb.config=mass_storage,adb
-# qcom cpu governor service
-dalvik.vm.heapstartsize=8m
-dalvik.vm.heapgrowthlimit=64m
-dalvik.vm.heapsize=256m
+
+# qcom display options
+debug.enabletr=true
+com.qc.hardware=true
 
 # tweaks
 persist.sys.ui.hw=1
 dalvik.vm.verify_bytecode=false
+
+#
+DEVICE_PROVISIONED=1
+
+
